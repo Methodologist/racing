@@ -5,38 +5,38 @@ function CheckpointService.new(checkpoints, maxLaps)
     local self = setmetatable({}, CheckpointService)
     self.checkpoints = checkpoints
     self.maxLaps = maxLaps
-    self.playerData = {}
+    self.playerData = {} -- Note: This stores data for both Players and Bot Models
     return self
 end
 
-function CheckpointService:InitPlayer(player)
-    self.playerData[player] = {
+-- This handles both human Player objects and Bot Models
+function CheckpointService:InitPlayer(racerEntity)
+    self.playerData[racerEntity] = {
         nextCheckpoint = 1,
         laps = 0,
-        hasStarted = false, -- NEW: Tracks if they've crossed the start line for the first time
+        hasStarted = false, 
         finished = false
     }
 end
 
-function CheckpointService:ProcessTouch(player, checkpointPart)
-    local data = self.playerData[player]
+function CheckpointService:ProcessTouch(racerEntity, checkpointPart)
+    local data = self.playerData[racerEntity]
     if not data or data.finished then return end
 
     local checkpointIndex = table.find(self.checkpoints, checkpointPart)
     if not checkpointIndex then return end
 
-    -- Check if they hit the correct next checkpoint
+    -- Check if they hit the correct next checkpoint in the sequence
     if checkpointIndex == data.nextCheckpoint then
-        
         local result = "Checkpoint"
 
         -- 1. Check what crossing this specific line means
         if checkpointIndex == 1 then
             if data.hasStarted then
-                -- They cycled the whole track and crossed the start/finish line again!
+                -- They successfully looped the track!
                 data.laps += 1
-                print(player.Name .. " completed lap " .. data.laps)
                 
+                -- Check for Win Condition
                 if data.laps >= self.maxLaps then
                     data.finished = true
                     result = "Finished"
@@ -44,25 +44,26 @@ function CheckpointService:ProcessTouch(player, checkpointPart)
                     result = "Lap"
                 end
             else
-                -- They just spawned and are crossing Checkpoint1 for the very first time
+                -- First time crossing the start line
                 data.hasStarted = true
-                print(player.Name .. " started the race!")
                 result = "Checkpoint"
             end
         else
-            -- They hit a normal mid-track checkpoint (e.g., Checkpoint 2, 3, 4, 5)
+            -- Mid-track checkpoint
             result = "Checkpoint"
         end
 
-        -- 2. Advance their target to the next physical wall
+        -- 2. Logic: Advance their target to the next physical checkpoint
         if data.nextCheckpoint == #self.checkpoints then
-            data.nextCheckpoint = 1 -- Loop back to Checkpoint 1
+            data.nextCheckpoint = 1 -- Reset target to the Start/Finish line
         else
             data.nextCheckpoint += 1
         end
 
         return result
     end
+    
+    return nil
 end
 
 return CheckpointService

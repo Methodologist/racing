@@ -1,16 +1,20 @@
 -- src/shared/KartConfig.lua
 local KartConfig = {}
 
-KartConfig.TopSpeed = 80       -- Raised so it feels like a race
+-- NEW: Attach these to the table so the client can read them!
+KartConfig.HopForce = 1000
+KartConfig.DriftBoostPower = 50 -- Added this so you don't get a nil error when drifting!
+
+KartConfig.TopSpeed = 150       -- Raised so it feels like a race
 KartConfig.Acceleration = 150  -- Needs to be high to overcome the kart's mass!
 
--- SUSPENSION
-KartConfig.SuspensionStiffness = 150 
-KartConfig.SuspensionDamping = 15    
-KartConfig.SuspensionLength = 1.5    -- Raised to 1.5 to stop the chassis from scraping!
+-- 🛸 HOVERCRAFT SUSPENSION TUNING
+KartConfig.SuspensionStiffness = 85  -- Strong enough to hold the heavy kart off the ground
+KartConfig.SuspensionDamping = 35    -- Keeps that thick "pillow" feeling so it doesn't bounce
+KartConfig.SuspensionLength = 2.5
 
-KartConfig.TurnSpeed = 75     -- Lowered from the hardcoded 150. Controls how fast you turn.
-KartConfig.TurnDamping = 35   -- Raised from 25. This "smooths out" the steering so it isn't twitchy.
+KartConfig.TurnSpeed = 100     -- Slightly lower for more precision
+KartConfig.TurnDamping = 45   -- Increased from 35 to stop that "dragging" feeling
 
 -- WHEEL FIXES: Swapped Z values so Front is -Z (Standard Roblox Forward)
 KartConfig.WheelOffset = {

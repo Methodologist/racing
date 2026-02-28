@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+-- DO NOT require() other game scripts here!
 local RemotesFolder = ReplicatedStorage:FindFirstChild("Remotes") or Instance.new("Folder")
 RemotesFolder.Name = "Remotes"
 RemotesFolder.Parent = ReplicatedStorage
@@ -29,7 +30,8 @@ local Remotes = {
     RaceGo = getOrCreateRemoteEvent("RaceGo"),
     ApplyBoost = getOrCreateRemoteEvent("ApplyBoost"),
     RaceFinished = getOrCreateRemoteEvent("RaceFinished"),
-    UpdateLap = getOrCreateRemoteEvent("UpdateLap"), -- ADDED THIS
+    UpdateLap = getOrCreateRemoteEvent("UpdateLap"),
+    ShowPopup = getOrCreateRemoteEvent("ShowPopup"),
     RequestKartSpawn = getOrCreateRemoteFunction("RequestKartSpawn"),
 }
 
